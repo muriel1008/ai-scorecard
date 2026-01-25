@@ -635,7 +635,8 @@
             console.log('Answer for this question:', answers[question.id]);
 
             // Validate answer
-            if (!answers[question.id] || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)) {
+            // Fix: Check for undefined specifically, because index 0 is falsy
+            if (answers[question.id] === undefined || answers[question.id] === null || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)) {
                 alert('Vui lòng chọn ít nhất một đáp án');
                 return;
             }
