@@ -575,8 +575,10 @@
         }
 
         function selectOption(questionId, optionIndex, type) {
+            console.log('selectOption called:', questionId, optionIndex, type);
             if (type === 'radio') {
                 answers[questionId] = optionIndex;
+                console.log('Updated answers:', answers);
                 // Update UI and input checked state
                 document.querySelectorAll(`input[name="${questionId}"]`).forEach((input, i) => {
                     input.checked = (i === optionIndex);
@@ -590,6 +592,7 @@
                 } else {
                     answers[questionId].push(optionIndex);
                 }
+                console.log('Updated answers:', answers);
             }
         }
 
@@ -627,6 +630,9 @@
 
         function nextQuestion() {
             const question = questions[currentQuestion];
+            console.log('nextQuestion - checking answer for:', question.id);
+            console.log('Current answers object:', answers);
+            console.log('Answer for this question:', answers[question.id]);
 
             // Validate answer
             if (!answers[question.id] || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)) {
