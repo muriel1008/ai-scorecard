@@ -277,6 +277,62 @@
             display: none;
         }
 
+        /* Result Page Rich Content Styles */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .result-table th {
+            background-color: #f8f9ff;
+            color: #667eea;
+            padding: 12px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .result-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .result-highlight {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .result-checklist {
+            list-style: none;
+            text-align: left;
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+
+        .result-checklist li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .result-checklist input {
+            margin-right: 10px;
+        }
+
+        .result-quote {
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+            text-align: left;
+        }
+
         @media (max-width: 600px) {
             .header h1 {
                 font-size: 24px;
@@ -575,10 +631,8 @@
         }
 
         function selectOption(questionId, optionIndex, type) {
-            console.log('selectOption called:', questionId, optionIndex, type);
             if (type === 'radio') {
                 answers[questionId] = optionIndex;
-                console.log('Updated answers:', answers);
                 // Update UI and input checked state
                 document.querySelectorAll(`input[name="${questionId}"]`).forEach((input, i) => {
                     input.checked = (i === optionIndex);
@@ -669,16 +723,10 @@
 
         function nextQuestion() {
             const question = questions[currentQuestion];
-            console.log('nextQuestion - checking answer for:', question.id);
-            console.log('Current answers object:', answers);
-            console.log('Answer for this question:', answers[question.id]);
 
             // Validate answer
             // Fix: Check for undefined specifically, because index 0 is falsy
             if (answers[question.id] === undefined || answers[question.id] === null || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)) {
-                // DEBUG: Show why it failed
-                alert(`Debug Info:\nQuestion ID: ${question.id}\nAnswer Value: ${JSON.stringify(answers[question.id])}\nType: ${typeof answers[question.id]}`);
-
                 alert('Vui lòng chọn ít nhất một đáp án');
                 return;
             }
@@ -720,19 +768,91 @@
                 return {
                     name: 'AI Curious',
                     class: 'tier-curious',
-                    description: 'Bạn đang khám phá, chưa có hệ thống. Bạn cần nền tảng. Bắt đầu với 1 tool, 1 tác vụ cụ thể.'
+                    description: `
+                        <p class="result-highlight">Bạn đang ở đây — cùng với <strong>70% dân văn phòng</strong>.</p>
+                        <p>Tại sao tỷ lệ này cao? Phần lớn nội dung AI chất lượng bằng tiếng Anh. Nếu không theo dõi AI Twitter/YouTube, bạn chỉ biết những gì đã mainstream — tức là đã chậm 6-12 tháng.</p>
+                        <p>Không có gì sai. Nhưng có một khoảng cách mà bạn chưa thấy:</p>
+
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th>Bạn đang làm</th>
+                                    <th>AI Native làm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Hỏi AI từng câu, đợi trả lời</td>
+                                    <td>Chạy workflow tự động giữa nhiều tool</td>
+                                </tr>
+                                <tr>
+                                    <td>Copy output nguyên xi</td>
+                                    <td>Thiết kế prompt để ra đúng format lần đầu</td>
+                                </tr>
+                                <tr>
+                                    <td>"AI hay lắm, nhưng không biết dùng vào đâu"</td>
+                                    <td>"AI thay đổi cách tôi làm việc"</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p><strong>Tin tốt:</strong> Khoảng cách này rút ngắn được — nếu có người chỉ đúng hướng.</p>
+                    `
                 };
             } else if (score >= 20 && score <= 28) {
                 return {
                     name: 'AI Literate',
                     class: 'tier-literate',
-                    description: 'Bạn dùng được, có mục đích rõ ràng. Bạn đang đi đúng hướng. Mở rộng sang tool chuyên dụng và tính năng nâng cao.'
+                    description: `
+                        <p class="result-highlight">Đây là mức mà <strong>hầu hết mọi người nghĩ mình đang ở</strong> — nhưng thực tế chỉ ~25%.</p>
+                        <p>Nhóm này thường là Gen Z/Millennial, thông thạo tiếng Anh, làm ở MNC hoặc startup.</p>
+                        <p>Bạn dùng AI hàng ngày, có tool quen thuộc, biết prompt cho ra kết quả tạm được. Nhưng giữa "dùng được" và "không thể thiếu" có một bước nhảy:</p>
+
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th>Bạn đang làm</th>
+                                    <th>AI Native làm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Prompt chi tiết, vẫn phải chỉnh 2-3 lần</td>
+                                    <td>Prompt có cấu trúc: Role + Task + Context + Format</td>
+                                </tr>
+                                <tr>
+                                    <td>Dùng AI như trợ lý — đưa việc, nhận output</td>
+                                    <td>Dùng AI như quản lý — đưa mục tiêu, nó tự tìm cách</td>
+                                </tr>
+                                <tr>
+                                    <td>Tạo Custom GPT để lưu quy trình</td>
+                                    <td>Mô tả để AI code ra tool hoàn chỉnh (vibe coding)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p class="result-question"><strong>Câu hỏi:</strong> Bạn muốn dừng ở "dùng được" hay lên "không thể thiếu"?</p>
+                    `
                 };
             } else {
                 return {
                     name: 'AI Native',
                     class: 'tier-native',
-                    description: 'AI là một phần không thể thiếu. Bạn đã thuần thục. Tiếp tục tối ưu workflow và chia sẻ cho người khác.'
+                    description: `
+                        <p class="result-highlight">Nếu bạn thực sự ở đây — chúc mừng. Bạn thuộc nhóm <strong>5%</strong>.</p>
+                        <p>Nhóm này thường là developer, expat, hoặc người "sống" trên AI Twitter/YouTube tiếng Anh.</p>
+                        <p class="result-question">Nhưng có một câu hỏi:</p>
+
+                        <div class="result-quote">Bạn có thể <strong>dạy lại</strong> những gì mình biết không?</div>
+
+                        <ul class="result-checklist">
+                            <li><input type="checkbox" disabled> Giải thích được cho đồng nghiệp cách bạn dùng AI</li>
+                            <li><input type="checkbox" disabled> Có workflow cụ thể mà người khác copy được</li>
+                            <li><input type="checkbox" disabled> Đã từng giúp ai đó từ Curious lên Literate</li>
+                        </ul>
+
+                        <p><strong>Nếu chưa tick hết:</strong> Kỹ năng cá nhân ≠ khả năng truyền đạt. Đó là level tiếp theo.</p>
+                    `
                 };
             }
         }
@@ -746,7 +866,8 @@
 
             document.getElementById('finalScore').textContent = score;
             document.getElementById('tierBadge').innerHTML = `<div class="tier-badge ${tier.class}">${tier.name}</div>`;
-            document.getElementById('tierDescription').textContent = tier.description;
+            // Change from textContent to innerHTML to support rich text
+            document.getElementById('tierDescription').innerHTML = tier.description;
 
             // Update progress to 100%
             document.getElementById('progressBar').style.width = '100%';
