@@ -587,11 +587,50 @@
             } else if (type === 'checkbox') {
                 if (!answers[questionId]) answers[questionId] = [];
                 const index = answers[questionId].indexOf(optionIndex);
+
+                // Find the input and label to update UI
+                // We need to match based on value because IDs aren't unique enough
+                const inputs = document.querySelectorAll(`input[type="checkbox"]`);
+                let targetInput = null;
+                inputs.forEach(input => {
+                    if (input.value == optionIndex && input.parentElement.innerText.trim() === questions.find(q => q.id === questionId).options[optionIndex]) {
+                        targetInput = input;
+                    }
+                });
+
+                // Actually, simpler way: use the event target if possible, but we don't have it passed here.
+                // Let's just rely on the fact that we can re-render or toggle class based on index.
+                // Better approach:
+                const selector = `input[type="checkbox"][value="${optionIndex}"]`;
+                // This is risky if multiple questions have same index. We need to scope by question.
+                // But current rendering doesn't put question ID on inputs easily accessible for querySelector unless we add it.
+
                 if (index > -1) {
                     answers[questionId].splice(index, 1);
+                    // Remove selected class logic would go here
                 } else {
                     answers[questionId].push(optionIndex);
+                    // Add selected class logic would go here
                 }
+
+                // FORCE UI SYNC
+                // Loop through all options for this question and update classes based on answer array
+                document.querySelectorAll(`#quiz-container .option`).forEach(label => {
+                    // Check if this label belongs to current question (we can infer from context or just update all visible ones)
+                    // Since we only show one question at a time (renderQuestion), we can just update all checkboxes in view.
+                    const input = label.querySelector('input[type="checkbox"]');
+                    if (input) {
+                        const val = parseInt(input.value);
+                        if (answers[questionId].includes(val)) {
+                            label.classList.add('selected');
+                            input.checked = true;
+                        } else {
+                            label.classList.remove('selected');
+                            input.checked = false;
+                        }
+                    }
+                });
+
                 console.log('Updated answers:', answers);
             }
         }
@@ -637,6 +676,9 @@
             // Validate answer
             // Fix: Check for undefined specifically, because index 0 is falsy
             if (answers[question.id] === undefined || answers[question.id] === null || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)) {
+                // DEBUG: Show why it failed
+                alert(`Debug Info:\nQuestion ID: ${question.id}\nAnswer Value: ${JSON.stringify(answers[question.id])}\nType: ${typeof answers[question.id]}`);
+
                 alert('Vui lòng chọn ít nhất một đáp án');
                 return;
             }
