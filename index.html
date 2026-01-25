@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Proficiency Scorecard - Chú Tim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .question {
+            margin-bottom: 30px;
+        }
+
+        .question-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .question-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .option {
+            display: block;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .checkbox-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            margin-right: 10px;
+        }
+
+        .result-page {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .score-max {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .tier-curious {
+            background: #3498db;
+            color: white;
+        }
+
+        .tier-literate {
+            background: #f39c12;
+            color: white;
+        }
+
+        .tier-native {
+            background: #27ae60;
+            color: white;
+        }
+
+        .tier-description {
+            font-size: 18px;
+            color: #555;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .cta-box {
+            background: #f8f9ff;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .cta-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .cta-box p {
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .score-circle {
+                width: 160px;
+                height: 160px;
+            }
+
+            .score-number {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Proficiency Scorecard</h1>
+            <p>Đánh giá mức độ thuần thục AI của bạn</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="content">
+            <!-- Section 1: Personal Info -->
+            <div class="section active" id="section-info">
+                <h2 style="margin-bottom: 20px;">Thông tin cá nhân</h2>
+
+                <div class="form-group">
+                    <label>Họ và tên <span class="required">*</span></label>
+                    <input type="text" id="name" required>
+                    <div class="error" id="name-error">Vui lòng nhập họ tên</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email <span class="required">*</span></label>
+                    <input type="email" id="email" required>
+                    <div class="error" id="email-error">Vui lòng nhập email hợp lệ</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Công việc / Chức vụ hiện tại</label>
+                    <input type="text" id="job" placeholder="Ví dụ: Marketing Manager, Sales logistics...">
+                </div>
+
+                <button class="btn" onclick="startQuiz()">Bắt đầu đánh giá</button>
+            </div>
+
+            <!-- Section 2: Questions -->
+            <div class="section" id="section-quiz">
+                <div id="quiz-container"></div>
+
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn"
+                        style="display:none;">Quay lại</button>
+                    <button class="btn" onclick="nextQuestion()" id="nextBtn">Tiếp theo</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Results -->
+            <div class="section" id="section-result">
+                <div class="result-page">
+                    <h2>Kết quả của bạn</h2>
+
+                    <div class="score-circle">
+                        <div class="score-number" id="finalScore">0</div>
+                        <div class="score-max">/ 36 điểm</div>
+                    </div>
+
+                    <div id="tierBadge"></div>
+                    <div class="tier-description" id="tierDescription"></div>
+
+                    <div class="cta-box">
+                        <h3>🚀 Muốn lên level?</h3>
+                        <p>Tham gia workshop <strong>"AI vỡ lòng cho dân văn phòng"</strong></p>
+                        <p>📅 Thứ 7, 1/2/2026 | 9:00-11:30 | Online</p>
+                        <button class="btn" onclick="registerWorkshop()">Đăng ký Workshop (MIỄN PHÍ)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 'q1',
+                title: 'Q1. Tần suất sử dụng',
+                subtitle: 'Bạn dùng AI bao lâu một lần?',
+                type: 'radio',
+                options: [
+                    { text: 'Vài lần/tuần, thử nghiệm linh tinh', score: 1 },
+                    { text: 'Hàng ngày, cho các tác vụ cụ thể', score: 2 },
+                    { text: 'Liên tục, tích hợp vào hầu hết công việc', score: 3 }
+                ]
+            },
+            {
+                id: 'q2',
+                title: 'Q2. Chất lượng output',
+                subtitle: 'Cho tác vụ bạn làm thường xuyên, trung bình phải chỉnh mấy lần mới ra output dùng được?',
+                type: 'radio',
+                options: [
+                    { text: '>5 lần', score: 1 },
+                    { text: '2-4 lần', score: 2 },
+                    { text: '0-1 lần', score: 3 }
+                ]
+            },
+            {
+                id: 'q3',
+                title: 'Q3. Độ phức tạp tác vụ',
+                subtitle: 'Tác vụ phức tạp nhất bạn đã hoàn thành với AI?',
+                type: 'radio',
+                options: [
+                    { text: 'Hỏi đáp đơn giản, dịch ngắn, giải thích khái niệm', score: 1 },
+                    { text: 'Email, tóm tắt, báo cáo, phân tích dữ liệu cơ bản, nghiên cứu', score: 2 },
+                    { text: 'Workflow nhiều bước / Tự động hóa / Xây dựng tool hoặc app', score: 3 }
+                ]
+            },
+            {
+                id: 'q4',
+                title: 'Q4. Xử lý khi AI sai',
+                subtitle: 'Khi AI trả kết quả sai hoặc không như ý, bạn thường làm gì?',
+                type: 'radio',
+                options: [
+                    { text: 'Bỏ cuộc, tự làm tay', score: 1 },
+                    { text: 'Thử lại vài lần, đổi cách hỏi', score: 2 },
+                    { text: 'Biết chính xác chỗ nào cần sửa trong prompt', score: 3 }
+                ]
+            },
+            {
+                id: 'q5',
+                title: 'Q5. Số lượng tool',
+                subtitle: 'Bạn đang dùng AI tool nào? (chọn tất cả)',
+                type: 'checkbox',
+                options: [
+                    'ChatGPT (Free / Plus / Pro)',
+                    'Claude (Free / Pro)',
+                    'Gemini (Free / Advanced)',
+                    'Copilot',
+                    'Perplexity',
+                    'NotebookLM',
+                    'Gamma',
+                    'Deepseek / Grok / Khác'
+                ],
+                scoring: (count) => count <= 2 ? 1 : count <= 4 ? 2 : 3
+            },
+            {
+                id: 'q6',
+                title: 'Q6. Truy cập tool trả phí',
+                subtitle: 'Bạn có quyền truy cập AI tool trả phí không? (tự trả hoặc công ty trả)',
+                type: 'radio',
+                options: [
+                    { text: 'Không, chỉ dùng free', score: 1 },
+                    { text: 'Có 1 tool', score: 2 },
+                    { text: 'Có 2+ tools', score: 3 }
+                ]
+            },
+            {
+                id: 'q7',
+                title: 'Q7. Kết nối tool (chaining)',
+                subtitle: 'Bạn có kết nối output từ tool này làm input cho tool khác không? (Ví dụ: Research từ Perplexity → viết bài bằng Claude → tạo slide bằng Gamma)',
+                type: 'radio',
+                options: [
+                    { text: 'Không, dùng từng tool riêng lẻ', score: 1 },
+                    { text: 'Có, copy-paste thủ công giữa các tool', score: 2 },
+                    { text: 'Có workflow rõ ràng hoặc dùng automation (Make, Zapier...)', score: 3 },
+                    { text: 'Tôi dùng terminal, Cursor, Agentic AI... khi dùng AI', score: 3 }
+                ]
+            },
+            {
+                id: 'q8',
+                title: 'Q8. Tư duy về AI',
+                subtitle: 'Câu nào mô tả đúng nhất cách bạn nghĩ về AI?',
+                type: 'radio',
+                options: [
+                    { text: '"Không biết AI giúp gì được cho công việc tôi"', score: 1 },
+                    { text: '"AI giúp tôi làm nhanh hơn một số việc"', score: 2 },
+                    { text: '"AI thay đổi hoàn toàn cách tôi làm việc"', score: 3 }
+                ]
+            },
+            {
+                id: 'q9',
+                title: 'Q9. Tính năng nâng cao',
+                subtitle: 'Bạn đã DÙNG tính năng nâng cao nào? (chọn tất cả)',
+                type: 'checkbox',
+                options: [
+                    'Custom GPT / Gems / Claude Projects',
+                    'Memory (ChatGPT nhớ context dài hạn)',
+                    'Artifacts (Claude tạo code/doc riêng)',
+                    'Canvas (ChatGPT chỉnh sửa trực tiếp)',
+                    'Deep Research (Gemini / ChatGPT)',
+                    'Voice mode',
+                    'Vision (upload hình để AI phân tích)',
+                    'Code Interpreter / Advanced Data Analysis',
+                    'Claude Code / Codex (AI viết code trực tiếp)'
+                ],
+                scoring: (count) => count <= 1 ? 1 : count <= 4 ? 2 : 3
+            },
+            {
+                id: 'q10',
+                title: 'Q10. Tự xây công cụ',
+                subtitle: 'Bạn đã bao giờ tự tạo ra một công cụ cho mình chưa?',
+                type: 'radio',
+                options: [
+                    { text: 'Chưa, tôi chỉ chat hỏi đáp bình thường', score: 1 },
+                    { text: 'Rồi, tôi dùng Custom GPT/Artifacts tạo quy trình mẫu để dùng lại', score: 2 },
+                    { text: 'Rồi, tôi mô tả để AI code xong một web app/tool/game nhỏ mà không cần biết lập trình', score: 3 }
+                ]
+            },
+            {
+                id: 'q11',
+                title: 'Q11. Agent Mindset',
+                subtitle: 'Cách bạn giao việc cho AI giống trường hợp nào nhất?',
+                type: 'radio',
+                options: [
+                    { text: 'Nhân viên tập sự: Tôi hỏi gì nó trả lời nấy', score: 1 },
+                    { text: 'Trợ lý: Tôi đưa quy trình cụ thể (Step 1, 2, 3), nó làm theo y hệt', score: 2 },
+                    { text: 'Quản lý cấp trung: Tôi đưa mục tiêu ("Tìm vé máy bay rẻ nhất"), nó tự biết phải tra ở đâu, so sánh và báo cáo lại', score: 3 }
+                ]
+            },
+            {
+                id: 'q12',
+                title: 'Q12. Prompting Structure',
+                subtitle: 'Một câu lệnh (prompt) tiêu chuẩn của bạn thường dài bao nhiêu?',
+                type: 'radio',
+                options: [
+                    { text: '1-2 dòng, viết tự nhiên như nói chuyện', score: 1 },
+                    { text: '1 đoạn văn, cố gắng mô tả chi tiết', score: 2 },
+                    { text: 'Có cấu trúc rõ ràng: Vai trò + Nhiệm vụ + Context + Output format + Ràng buộc', score: 3 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+        let userData = {};
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function renderQuestion(index) {
+            const question = questions[index];
+            const container = document.getElementById('quiz-container');
+
+            let html = `
+                <div class="question">
+                    <div class="question-title">${question.title}</div>
+                    <div class="question-subtitle">${question.subtitle}</div>
+            `;
+
+            if (question.type === 'radio') {
+                question.options.forEach((option, i) => {
+                    const checked = answers[question.id] === i ? 'checked' : '';
+                    const selected = answers[question.id] === i ? 'selected' : '';
+                    html += `
+                        <label class="option ${selected}" onclick="selectOption('${question.id}', ${i}, 'radio')">
+                            <input type="radio" name="${question.id}" value="${i}" ${checked}>
+                            ${option.text}
+                        </label>
+                    `;
+                });
+            } else if (question.type === 'checkbox') {
+                html += '<div class="checkbox-group">';
+                question.options.forEach((option, i) => {
+                    const checked = answers[question.id] && answers[question.id].includes(i) ? 'checked' : '';
+                    const selected = answers[question.id] && answers[question.id].includes(i) ? 'selected' : '';
+                    html += `
+                        <label class="option ${selected}" onclick="selectOption('${question.id}', ${i}, 'checkbox')">
+                            <input type="checkbox" value="${i}" ${checked}>
+                            ${option}
+                        </label>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+
+            updateProgress();
+
+            // Update button visibility
+            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'inline-block' : 'none';
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? 'Xem kết quả' : 'Tiếp theo';
+        }
+
+        function selectOption(questionId, optionIndex, type) {
+            if (type === 'radio') {
+                answers[questionId] = optionIndex;
+                // Update UI and input checked state
+                document.querySelectorAll(`input[name="${questionId}"]`).forEach((input, i) => {
+                    input.checked = (i === optionIndex);
+                    input.parentElement.classList.toggle('selected', i === optionIndex);
+                });
+            } else if (type === 'checkbox') {
+                if (!answers[questionId]) answers[questionId] = [];
+                const index = answers[questionId].indexOf(optionIndex);
+                if (index > -1) {
+                    answers[questionId].splice(index, 1);
+                } else {
+                    answers[questionId].push(optionIndex);
+                }
+            }
+        }
+
+        function startQuiz() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const job = document.getElementById('job').value.trim();
+
+            // Validation
+            let valid = true;
+
+            if (!name) {
+                document.getElementById('name-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('name-error').style.display = 'none';
+            }
+
+            if (!email || !email.includes('@')) {
+                document.getElementById('email-error').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('email-error').style.display = 'none';
+            }
+
+            if (!valid) return;
+
+            userData = { name, email, job };
+
+            document.getElementById('section-info').classList.remove('active');
+            document.getElementById('section-quiz').classList.add('active');
+
+            renderQuestion(0);
+        }
+
+        function nextQuestion() {
+            const question = questions[currentQuestion];
+
+            // Validate answer
+            if (!answers[question.id] || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)) {
+                alert('Vui lòng chọn ít nhất một đáp án');
+                return;
+            }
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion(currentQuestion);
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion(currentQuestion);
+            }
+        }
+
+        function calculateScore() {
+            let totalScore = 0;
+
+            questions.forEach(question => {
+                const answer = answers[question.id];
+
+                if (question.type === 'radio') {
+                    totalScore += question.options[answer].score;
+                } else if (question.type === 'checkbox') {
+                    const count = answer.length;
+                    totalScore += question.scoring(count);
+                }
+            });
+
+            return totalScore;
+        }
+
+        function getTier(score) {
+            if (score >= 12 && score <= 19) {
+                return {
+                    name: 'AI Curious',
+                    class: 'tier-curious',
+                    description: 'Bạn đang khám phá, chưa có hệ thống. Bạn cần nền tảng. Bắt đầu với 1 tool, 1 tác vụ cụ thể.'
+                };
+            } else if (score >= 20 && score <= 28) {
+                return {
+                    name: 'AI Literate',
+                    class: 'tier-literate',
+                    description: 'Bạn dùng được, có mục đích rõ ràng. Bạn đang đi đúng hướng. Mở rộng sang tool chuyên dụng và tính năng nâng cao.'
+                };
+            } else {
+                return {
+                    name: 'AI Native',
+                    class: 'tier-native',
+                    description: 'AI là một phần không thể thiếu. Bạn đã thuần thục. Tiếp tục tối ưu workflow và chia sẻ cho người khác.'
+                };
+            }
+        }
+
+        function showResults() {
+            const score = calculateScore();
+            const tier = getTier(score);
+
+            document.getElementById('section-quiz').classList.remove('active');
+            document.getElementById('section-result').classList.add('active');
+
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('tierBadge').innerHTML = `<div class="tier-badge ${tier.class}">${tier.name}</div>`;
+            document.getElementById('tierDescription').textContent = tier.description;
+
+            // Update progress to 100%
+            document.getElementById('progressBar').style.width = '100%';
+
+            // Store result for workshop registration
+            userData.score = score;
+            userData.tier = tier.name;
+            userData.answers = answers;
+        }
+
+        function registerWorkshop() {
+            // TODO: Replace with your Google Sheets Web App URL
+            const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyVrGEuzCE-9FYLg2ib1ZxL1vylGP207Q00JB2C_f4BGY5wDoxS0HYwKvnJ42bVzcgd/exec';
+
+            // Prepare data
+            const data = {
+                timestamp: new Date().toISOString(),
+                name: userData.name,
+                email: userData.email,
+                job: userData.job,
+                score: userData.score,
+                tier: userData.tier,
+                answers: JSON.stringify(userData.answers)
+            };
+
+            // Send to Google Sheets
+            fetch(GOOGLE_SHEETS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+                .then(() => {
+                    alert('Đăng ký thành công! Chúng tôi sẽ gửi link Google Meet qua email vào ngày 31/1. Hẹn gặp bạn!');
+                    // Optionally redirect or show confirmation
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ trực tiếp qua email.');
+                });
+        }
+    </script>
+</body>
+
+</html>
