@@ -422,6 +422,30 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Section 4: Thank You -->
+            <div class="section" id="section-thankyou">
+                <div class="result-page">
+                    <div class="score-circle"
+                        style="background: #2ecc71; width: 100px; height: 100px; margin: 0 auto 20px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" style="width: 50px; height: 50px;">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <h2>Đăng ký thành công!</h2>
+                    <p style="font-size: 18px; margin-bottom: 30px;">Tim đã nhận được thông tin của bạn.</p>
+
+                    <div class="cta-box" style="margin-top: 0; background: #fff; border: 1px solid #e0e0e0;">
+                        <div id="thankYouMessage"></div>
+                    </div>
+
+                    <div style="margin-top: 30px; font-size: 14px; color: #7f8c8d;">
+                        <p>Link Google Meet sẽ được gửi qua email trước ngày 31/1.</p>
+                        <p>Hẹn gặp bạn!</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -769,8 +793,8 @@
                     name: 'AI Curious',
                     class: 'tier-curious',
                     description: `
-                        <p class="result-highlight">Bạn đang ở đây — cùng với <strong>70% dân văn phòng</strong>.</p>
-                        <p>Tại sao tỷ lệ này cao? Phần lớn nội dung AI chất lượng bằng tiếng Anh. Nếu không theo dõi AI Twitter/YouTube, bạn chỉ biết những gì đã mainstream — tức là đã chậm 6-12 tháng.</p>
+                        <p class="result-highlight">Bạn đang ở đây - cùng với <strong>70% dân văn phòng</strong>.</p>
+                        <p>Tại sao tỷ lệ này cao? Phần lớn nội dung AI chất lượng bằng tiếng Anh. Nếu không theo dõi AI newsleters, cộng đồng, youtube, bạn chỉ biết những gì mọi người đều biết - tức là đã chậm 6-12 tháng.</p>
                         <p>Không có gì sai. Nhưng có một khoảng cách mà bạn chưa thấy:</p>
 
                         <table class="result-table">
@@ -806,7 +830,7 @@
                     description: `
                         <p class="result-highlight">Đây là mức mà <strong>hầu hết mọi người nghĩ mình đang ở</strong> — nhưng thực tế chỉ ~25%.</p>
                         <p>Nhóm này thường là Gen Z/Millennial, thông thạo tiếng Anh, làm ở MNC hoặc startup.</p>
-                        <p>Bạn dùng AI hàng ngày, có tool quen thuộc, biết prompt cho ra kết quả tạm được. Nhưng giữa "dùng được" và "không thể thiếu" có một bước nhảy:</p>
+                        <p>Bạn dùng AI hàng ngày, có tool quen thuộc, biết prompt cho ra kết quả tạm được. Nhưng giữa "dùng được A.I" và "lột xác bằng A.I" có một khoảng cách:</p>
 
                         <table class="result-table">
                             <thead>
@@ -831,7 +855,7 @@
                             </tbody>
                         </table>
 
-                        <p class="result-question"><strong>Câu hỏi:</strong> Bạn muốn dừng ở "dùng được" hay lên "không thể thiếu"?</p>
+                        <p class="result-question"><strong>Câu hỏi:</strong> Bạn muốn dừng ở "dùng được" hay lên "lột xác"?</p>
                     `
                 };
             } else {
@@ -839,11 +863,11 @@
                     name: 'AI Native',
                     class: 'tier-native',
                     description: `
-                        <p class="result-highlight">Nếu bạn thực sự ở đây — chúc mừng. Bạn thuộc nhóm <strong>5%</strong>.</p>
-                        <p>Nhóm này thường là developer, expat, hoặc người "sống" trên AI Twitter/YouTube tiếng Anh.</p>
-                        <p class="result-question">Nhưng có một câu hỏi:</p>
+                        <p class="result-highlight">Nếu bạn thực sự ở đây - chúc mừng. Bạn thuộc nhóm <strong>5%</strong>.</p>
+                        <p>Nhóm này thường là developer, expat, hoặc người "sống" trên các cộng đồng A.I và có khả năng tự mày mò cực tốt.</p>
+                        <p class="result-question"> Cho mình hỏi:</p>
 
-                        <div class="result-quote">Bạn có thể <strong>dạy lại</strong> những gì mình biết không?</div>
+                        <div class="result-quote">Bạn có thể <strong>dạy lại</strong> những gì bạn biết không?</div>
 
                         <ul class="result-checklist">
                             <li><input type="checkbox" disabled> Giải thích được cho đồng nghiệp cách bạn dùng AI</li>
@@ -851,7 +875,7 @@
                             <li><input type="checkbox" disabled> Đã từng giúp ai đó từ Curious lên Literate</li>
                         </ul>
 
-                        <p><strong>Nếu chưa tick hết:</strong> Kỹ năng cá nhân ≠ khả năng truyền đạt. Đó là level tiếp theo.</p>
+                        <p><strong>Nếu chưa tick hết:</strong> Hãy nhớ: Kỹ năng cá nhân ≠ khả năng truyền đạt. Đó là level tiếp theo bạn nên theo đuổi.</p>
                     `
                 };
             }
@@ -893,6 +917,11 @@
                 answers: JSON.stringify(userData.answers)
             };
 
+            const btn = document.querySelector('button[onclick="registerWorkshop()"]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Đang xử lý...';
+            btn.disabled = true;
+
             // Send to Google Sheets
             fetch(GOOGLE_SHEETS_URL, {
                 method: 'POST',
@@ -903,13 +932,45 @@
                 body: JSON.stringify(data)
             })
                 .then(() => {
-                    alert('Đăng ký thành công! Chúng tôi sẽ gửi link Google Meet qua email vào ngày 31/1. Hẹn gặp bạn!');
-                    // Optionally redirect or show confirmation
+                    // Hide result, show thank you
+                    document.getElementById('section-result').classList.remove('active');
+                    document.getElementById('section-thankyou').classList.add('active');
+
+                    // Set tier specific message
+                    const thankYouContent = getThankYouContent(userData.tier);
+                    document.getElementById('thankYouMessage').innerHTML = thankYouContent;
+
+                    // Scroll to top
+                    window.scrollTo(0, 0);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ trực tiếp qua email.');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
                 });
+        }
+
+        function getThankYouContent(tierName) {
+            if (tierName === 'AI Native') {
+                return `
+                    <h3 style="color: #27ae60; margin-bottom: 15px;">Lời nhắn riêng cho AI Native</h3>
+                    <p>Bạn đã ở mức Native. Workshop này có thể hơi "dễ" với bạn về mặt kỹ thuật.</p>
+                    <p style="margin-top: 10px;">Tuy nhiên, nếu bạn muốn học cách <strong>hệ thống hóa</strong> kiến thức để đi dạy lại cho người khác (hoặc cho team của mình), đây là buổi demo thực tế nhất.</p>
+                    <p style="margin-top: 10px;">Hẹn gặp bạn để bàn về "The Next Level".</p>
+                `;
+            } else {
+                return `
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Lời dặn dò trước giờ G</h3>
+                    <p>Để buổi học hiệu quả nhất, bạn vui lòng chuẩn bị:</p>
+                    <ul style="text-align: left; margin: 15px 0 15px 20px;">
+                        <li>Laptop (không dùng điện thoại)</li>
+                        <li>Tài khoản <strong>Claude.ai</strong> (Free)</li>
+                        <li>Tài khoản <strong>Gamma.app</strong> (Free)</li>
+                        <li>Một tâm hồn đẹp để đón nhận cái mới</li>
+                    </ul>
+                `;
+            }
         }
     </script>
 </body>
