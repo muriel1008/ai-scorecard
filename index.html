@@ -229,12 +229,17 @@
             margin: 20px 0;
         }
 
-        .tier-curious {
+        .tier-aware {
             background: #3498db;
             color: white;
         }
 
-        .tier-literate {
+        .tier-user {
+            background: #e67e22;
+            color: white;
+        }
+
+        .tier-practitioner {
             background: #f39c12;
             color: white;
         }
@@ -415,9 +420,9 @@
                     <div class="tier-description" id="tierDescription"></div>
 
                     <div class="cta-box">
-                        <h3>🚀 Muốn lên level?</h3>
+                        <h3>Muốn lên level?</h3>
                         <p>Tham gia workshop <strong>"AI vỡ lòng cho dân văn phòng"</strong></p>
-                        <p>📅 Chủ Nhật, 1/2/2026 | 9:00-11:30 | Online</p>
+                        <p id="workshopDateCta"></p>
                         <button class="btn" onclick="registerWorkshop()">Đăng ký Workshop (MIỄN PHÍ)</button>
                     </div>
                 </div>
@@ -441,7 +446,7 @@
                     </div>
 
                     <div style="margin-top: 30px; font-size: 14px; color: #7f8c8d;">
-                        <p>Link Google Meet sẽ được gửi qua email trước ngày 31/1.</p>
+                        <p>Link Google Meet sẽ được gửi qua email trước buổi workshop.</p>
                         <p>Hẹn gặp bạn!</p>
                     </div>
                 </div>
@@ -596,6 +601,27 @@
                     { text: '1 đoạn văn, cố gắng mô tả chi tiết', score: 2 },
                     { text: 'Có cấu trúc rõ ràng: Vai trò + Nhiệm vụ + Context + Output format + Ràng buộc', score: 3 }
                 ]
+            },
+            {
+                id: 'q13',
+                title: 'Q13. Bạn dùng AI làm gì?',
+                subtitle: 'Chọn tất cả tác vụ bạn đã từng dùng AI để làm (câu này không tính điểm)',
+                type: 'checkbox',
+                options: [
+                    'Viết / trả lời email',
+                    'Dịch (Anh ↔ Việt)',
+                    'Tóm tắt tài liệu / báo cáo dài',
+                    'Soạn báo cáo / đề xuất',
+                    'Phân tích dữ liệu (Excel, số liệu)',
+                    'Tạo slide / thuyết trình',
+                    'Brainstorm ý tưởng',
+                    'Viết content (LinkedIn, Facebook, blog)',
+                    'Nghiên cứu / tìm hiểu chủ đề mới',
+                    'Kiểm tra / chỉnh sửa văn bản (grammar, tone)',
+                    'Tạo hình ảnh',
+                    'Lên kế hoạch / to-do list'
+                ],
+                scoring: null
             }
         ];
 
@@ -748,11 +774,15 @@
         function nextQuestion() {
             const question = questions[currentQuestion];
 
-            // Validate answer
-            // Fix: Check for undefined specifically, because index 0 is falsy
-            if (answers[question.id] === undefined || answers[question.id] === null || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)) {
+            // Validate answer (skip for non-scoring questions)
+            const isOptional = question.scoring === null;
+            if (!isOptional && (answers[question.id] === undefined || answers[question.id] === null || (Array.isArray(answers[question.id]) && answers[question.id].length === 0))) {
                 alert('Vui lòng chọn ít nhất một đáp án');
                 return;
+            }
+            // Default empty array for optional checkbox questions
+            if (isOptional && !answers[question.id]) {
+                answers[question.id] = [];
             }
 
             if (currentQuestion < questions.length - 1) {
@@ -774,11 +804,12 @@
             let totalScore = 0;
 
             questions.forEach(question => {
+                if (!question.scoring && question.scoring !== undefined) return;
                 const answer = answers[question.id];
 
                 if (question.type === 'radio') {
                     totalScore += question.options[answer].score;
-                } else if (question.type === 'checkbox') {
+                } else if (question.type === 'checkbox' && question.scoring) {
                     const count = answer.length;
                     totalScore += question.scoring(count);
                 }
@@ -790,32 +821,33 @@
         function getTier(score) {
             if (score >= 12 && score <= 19) {
                 return {
-                    name: 'AI Curious',
-                    class: 'tier-curious',
+                    name: 'AI Aware',
+                    class: 'tier-aware',
                     description: `
-                        <p class="result-highlight">Bạn đang ở đây - cùng với <strong>70% dân văn phòng</strong>.</p>
-                        <p>Tại sao tỷ lệ này cao? Phần lớn nội dung AI chất lượng bằng tiếng Anh. Nếu không theo dõi AI newsleters, cộng đồng, youtube, bạn chỉ biết những gì mọi người đều biết - tức là đã chậm 6-12 tháng.</p>
+                        <p class="result-highlight">Bạn đang ở đây — cùng với rất nhiều dân văn phòng.</p>
+                        <p>Bạn đã nghe về AI, có thể đã thử vài lần. Nhưng chưa có thói quen dùng, chưa có use case cụ thể.</p>
+                        <p>Phần lớn nội dung AI chất lượng bằng tiếng Anh. Nếu không chủ động theo dõi, bạn chỉ biết những gì đã mainstream — tức là đã chậm 6-12 tháng.</p>
                         <p>Không có gì sai. Nhưng có một khoảng cách mà bạn chưa thấy:</p>
 
                         <table class="result-table">
                             <thead>
                                 <tr>
                                     <th>Bạn đang làm</th>
-                                    <th>AI Native làm</th>
+                                    <th>AI User làm</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Hỏi AI từng câu, đợi trả lời</td>
-                                    <td>Chạy workflow tự động giữa nhiều tool</td>
+                                    <td>Thỉnh thoảng hỏi AI khi tò mò</td>
+                                    <td>Dùng AI mỗi ngày cho công việc cụ thể</td>
                                 </tr>
                                 <tr>
                                     <td>Copy output nguyên xi</td>
-                                    <td>Thiết kế prompt để ra đúng format lần đầu</td>
+                                    <td>Biết cách chỉnh sửa để output dùng được</td>
                                 </tr>
                                 <tr>
                                     <td>"AI hay lắm, nhưng không biết dùng vào đâu"</td>
-                                    <td>"AI thay đổi cách tôi làm việc"</td>
+                                    <td>"AI giúp tôi làm nhanh hơn mỗi ngày"</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -823,14 +855,49 @@
                         <p><strong>Tin tốt:</strong> Khoảng cách này rút ngắn được — nếu có người chỉ đúng hướng.</p>
                     `
                 };
-            } else if (score >= 20 && score <= 28) {
+            } else if (score >= 20 && score <= 24) {
                 return {
-                    name: 'AI Literate',
-                    class: 'tier-literate',
+                    name: 'AI User',
+                    class: 'tier-user',
                     description: `
-                        <p class="result-highlight"><strong>Hầu hết mọi người</strong> cho rằng họ đang ở mức này, nhưng thực tế chỉ ~25%.</p>
-                        <p>Nhóm này thường là Gen Z/Millennial, thông thạo tiếng Anh, làm ở MNC hoặc startup.</p>
-                        <p>Bạn dùng AI hàng ngày, có tool quen thuộc, biết prompt cho ra kết quả tạm được. Nhưng giữa "dùng được A.I" và "lột xác bằng A.I" có một khoảng cách:</p>
+                        <p class="result-highlight">Bạn dùng AI hàng ngày — nhưng vẫn đang dùng như Google.</p>
+                        <p>Bạn biết ChatGPT, có thể đã dùng Custom GPT hoặc Projects. Nhưng cách bạn dùng AI chủ yếu là: hỏi một câu, nhận một đáp án, xong.</p>
+                        <p>Bạn chưa nghĩ về việc <strong>cách hỏi</strong> ảnh hưởng đến <strong>chất lượng câu trả lời</strong>.</p>
+
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th>Bạn đang làm</th>
+                                    <th>AI Practitioner làm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Hỏi gì thì hỏi, không nghĩ về prompt</td>
+                                    <td>Cấu trúc prompt để ra output đúng ngay lần đầu</td>
+                                </tr>
+                                <tr>
+                                    <td>Một tool, một cách dùng, default settings</td>
+                                    <td>Dùng nhiều mode: text, voice, vision, documents</td>
+                                </tr>
+                                <tr>
+                                    <td>AI là convenience — tiện thì dùng</td>
+                                    <td>AI là work partner — không thể thiếu</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p class="result-question"><strong>Sự khác biệt cốt lõi:</strong> AI User dùng AI một cách tình cờ. AI Practitioner dùng AI một cách có chủ đích.</p>
+                    `
+                };
+            } else if (score >= 25 && score <= 28) {
+                return {
+                    name: 'AI Practitioner',
+                    class: 'tier-practitioner',
+                    description: `
+                        <p class="result-highlight">Bạn dùng AI có chủ đích — và đang ở nhóm <strong>top 20%</strong> dân văn phòng.</p>
+                        <p>Bạn hiểu rằng cách hỏi quyết định chất lượng output. Bạn đã dùng các tính năng nâng cao, có thể đã customize setup riêng.</p>
+                        <p>Nhưng giữa "dùng tốt" và "không thể thiếu" vẫn còn một bước nhảy:</p>
 
                         <table class="result-table">
                             <thead>
@@ -841,21 +908,21 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Prompt chi tiết, vẫn phải chỉnh 2-3 lần</td>
-                                    <td>Prompt có cấu trúc: Role + Task + Context + Format</td>
+                                    <td>Prompt có cấu trúc, output tốt</td>
+                                    <td>Xây master prompt + hệ thống tái sử dụng</td>
                                 </tr>
                                 <tr>
-                                    <td>Dùng AI như trợ lý — đưa việc, nhận output</td>
-                                    <td>Dùng AI như quản lý — đưa mục tiêu, nó tự tìm cách</td>
+                                    <td>Dùng AI cho từng task riêng lẻ</td>
+                                    <td>AI tích hợp vào toàn bộ workflow</td>
                                 </tr>
                                 <tr>
-                                    <td>Tạo Custom GPT để lưu quy trình</td>
-                                    <td>Mô tả để AI code ra tool hoàn chỉnh (vibe coding)</td>
+                                    <td>Biết dùng tính năng nâng cao</td>
+                                    <td>Mô tả để AI code ra tool riêng (vibe coding)</td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <p class="result-question"><strong>Câu hỏi:</strong> Bạn muốn dừng ở "dùng được" hay lên "lột xác"?</p>
+                        <p class="result-question"><strong>Câu hỏi:</strong> Bạn muốn dừng ở "dùng tốt" hay lên "lột xác"?</p>
                     `
                 };
             } else {
@@ -863,19 +930,19 @@
                     name: 'AI Native',
                     class: 'tier-native',
                     description: `
-                        <p class="result-highlight">Nếu bạn thực sự ở đây - chúc mừng. Bạn thuộc nhóm <strong>5%</strong>.</p>
-                        <p>Nhóm này thường là developer, expat, hoặc người "sống" trên các cộng đồng A.I và có khả năng tự mày mò cực tốt.</p>
-                        <p class="result-question"> Cho mình hỏi:</p>
+                        <p class="result-highlight">Nếu bạn thực sự ở đây — chúc mừng. Bạn thuộc nhóm <strong>top 5%</strong>.</p>
+                        <p>Nhóm này thường là developer, expat, hoặc người "sống" trên các cộng đồng AI và có khả năng tự mày mò cực tốt.</p>
+                        <p class="result-question">Cho mình hỏi:</p>
 
                         <div class="result-quote">Bạn có thể <strong>dạy lại</strong> những gì bạn biết không?</div>
 
                         <ul class="result-checklist">
                             <li><input type="checkbox" disabled> Giải thích được cho đồng nghiệp cách bạn dùng AI</li>
                             <li><input type="checkbox" disabled> Có workflow cụ thể mà người khác copy được</li>
-                            <li><input type="checkbox" disabled> Đã từng giúp ai đó từ Curious lên Literate</li>
+                            <li><input type="checkbox" disabled> Đã từng giúp ai đó lên level</li>
                         </ul>
 
-                        <p><strong>Nếu chưa tick hết:</strong> Hãy nhớ: Kỹ năng cá nhân ≠ khả năng truyền đạt. Đó là level tiếp theo bạn nên theo đuổi.</p>
+                        <p><strong>Nếu chưa tick hết:</strong> Kỹ năng cá nhân ≠ khả năng truyền đạt. Đó là level tiếp theo.</p>
                     `
                 };
             }
@@ -895,6 +962,11 @@
 
             // Update progress to 100%
             document.getElementById('progressBar').style.width = '100%';
+
+            // Set dynamic workshop date
+            const isAdvanced = (tier.name === 'AI Practitioner' || tier.name === 'AI Native');
+            const ctaDate = isAdvanced ? 'CN 8/2/2026 | 09:00-11:30 | Online' : 'T7 7/2/2026 | 09:00-11:30 | Online';
+            document.getElementById('workshopDateCta').textContent = ctaDate;
 
             // Store result for workshop registration
             userData.score = score;
@@ -952,25 +1024,26 @@
         }
 
         function getThankYouContent(tierName) {
-            if (tierName === 'AI Native') {
-                return `
-                    <h3 style="color: #27ae60; margin-bottom: 15px;">Lời nhắn riêng cho AI Native</h3>
-                    <p>Bạn đã ở mức Native. Workshop này có thể hơi "dễ" với bạn về mặt kỹ thuật.</p>
-                    <p style="margin-top: 10px;">Tuy nhiên, nếu bạn muốn học cách <strong>hệ thống hóa</strong> kiến thức để đi dạy lại cho người khác (hoặc cho team của mình), đây là buổi demo thực tế nhất.</p>
-                    <p style="margin-top: 10px;">Hẹn gặp bạn để bàn về "The Next Level".</p>
-                `;
-            } else {
-                return `
-                    <h3 style="color: #667eea; margin-bottom: 15px;">Lời dặn dò trước giờ G</h3>
-                    <p>Để buổi học hiệu quả nhất, bạn vui lòng chuẩn bị:</p>
-                    <ul style="text-align: left; margin: 15px 0 15px 20px;">
-                        <li>Laptop (không dùng điện thoại)</li>
-                        <li>Tài khoản <strong>Claude.ai</strong> (Free)</li>
-                        <li>Tài khoản <strong>Gamma.app</strong> (Free)</li>
-                        <li>Một tâm hồn đẹp để đón nhận cái mới</li>
-                    </ul>
-                `;
-            }
+            const isAdvanced = (tierName === 'AI Practitioner' || tierName === 'AI Native');
+            const workshopDate = isAdvanced ? 'Chủ nhật 8/2/2026' : 'Thứ 7 ngày 7/2/2026';
+            const workshopLabel = isAdvanced ? 'Workshop B (AI Practitioner & Native)' : 'Workshop A (AI Aware & User)';
+
+            return `
+                <h3 style="color: #667eea; margin-bottom: 15px;">Workshop dành cho bạn: ${workshopLabel}</h3>
+                <p style="font-size: 20px; font-weight: bold; margin: 15px 0;">${workshopDate} | 09:00-11:30 | Online</p>
+                <p>Dựa trên kết quả scorecard, mình đã chọn buổi workshop phù hợp nhất với cấp độ của bạn.</p>
+                <p style="margin-top: 15px;"><strong>Để đăng ký, bạn cần làm 2 bước:</strong></p>
+                <ol style="text-align: left; margin: 15px 0 15px 20px;">
+                    <li>Vào <a href="https://muriel1008.github.io/tier-ranking-tool/" target="_blank" style="color: #667eea;">Tier Ranking Tool</a> — xếp hạng các tính năng AI theo ý bạn (nếu không biết tính năng nào thì bỏ qua, không cần xếp)</li>
+                    <li>Chụp màn hình kết quả và gửi kèm trong form đăng ký bên dưới</li>
+                </ol>
+                <p style="margin-top: 15px;">Để buổi học hiệu quả nhất, bạn vui lòng chuẩn bị:</p>
+                <ul style="text-align: left; margin: 15px 0 15px 20px;">
+                    <li>Laptop (không dùng điện thoại)</li>
+                    <li>Tài khoản <strong>Claude.ai</strong> (Free)</li>
+                    <li>Tài khoản <strong>Gamma.app</strong> (Free)</li>
+                </ul>
+            `;
         }
     </script>
 </body>
