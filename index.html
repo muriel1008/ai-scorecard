@@ -192,6 +192,19 @@
             margin-right: 10px;
         }
 
+        .btn-booking {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            margin-top: 10px;
+        }
+
+        .btn-booking:hover {
+            background: #f8f9ff;
+            color: #764ba2;
+            border-color: #764ba2;
+        }
+
         .result-page {
             text-align: center;
         }
@@ -424,6 +437,10 @@
                         <p>Tham gia workshop <strong>"AI vỡ lòng cho dân văn phòng"</strong></p>
                         <p id="workshopDateCta"></p>
                         <button class="btn" onclick="registerWorkshop()">Đăng ký Workshop (MIỄN PHÍ)</button>
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #667eea;">
+                            <p style="font-size: 14px; margin-bottom: 8px; color: #7f8c8d;">Hoặc bạn muốn đi nhanh hơn?</p>
+                            <button class="btn btn-booking" onclick="window.open('https://calendar.app.google/cWx1bqMcox4becCx7', '_blank')">Wanna meet? (Book 1-1 với Tim)</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -443,6 +460,10 @@
 
                     <div class="cta-box" style="margin-top: 0; background: #fff; border: 1px solid #e0e0e0;">
                         <div id="thankYouMessage"></div>
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #e0e0e0;">
+                            <p style="font-size: 14px; margin-bottom: 8px; color: #7f8c8d;">Bạn không muốn đợi đến ngày workshop?</p>
+                            <button class="btn btn-booking" onclick="window.open('https://calendar.app.google/cWx1bqMcox4becCx7', '_blank')">Wanna meet? (Book 1-1 với Tim)</button>
+                        </div>
                     </div>
 
                     <div style="margin-top: 30px; font-size: 14px; color: #7f8c8d;">
