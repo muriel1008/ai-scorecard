@@ -709,6 +709,12 @@
                     input.checked = (i === optionIndex);
                     input.parentElement.classList.toggle('selected', i === optionIndex);
                 });
+
+                // Auto-advance to next question after short delay
+                setTimeout(() => {
+                    nextQuestion();
+                }, 400);
+
             } else if (type === 'checkbox') {
                 if (!answers[questionId]) answers[questionId] = [];
                 const index = answers[questionId].indexOf(optionIndex);
