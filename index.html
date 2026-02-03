@@ -848,7 +848,7 @@
         function getTier(score) {
             if (score >= 12 && score <= 19) {
                 return {
-                    name: 'AI Aware',
+                    name: 'AI Curious',
                     class: 'tier-aware',
                     description: `
                         <p class="result-highlight">Bạn đang ở đây — cùng với rất nhiều dân văn phòng.</p>
@@ -1053,7 +1053,7 @@
         function getThankYouContent(tierName) {
             const isAdvanced = (tierName === 'AI Practitioner' || tierName === 'AI Native');
             const workshopDate = isAdvanced ? 'Chủ nhật 8/2/2026' : 'Thứ 7 ngày 7/2/2026';
-            const workshopLabel = isAdvanced ? 'Workshop B (AI Practitioner & Native)' : 'Workshop A (AI Aware & User)';
+            const workshopLabel = isAdvanced ? 'Workshop B (AI Practitioner & Native)' : 'Workshop A (AI Curious & User)';
 
             return `
                 <h3 style="color: #667eea; margin-bottom: 15px;">Workshop dành cho bạn: ${workshopLabel}</h3>
